@@ -1,10 +1,19 @@
 <script setup>
 import { useRouter } from 'vue-router';
-const router = useRouter();
+// import { storeToRefs } from 'pinia';
+// import { useDaybook } from '../store/journal';
 
-const goToDaybook = () => router.push('/daybook');
+// const router = useRouter();
+// const daybook = useDaybook();
+// const { name, counter } = storeToRefs(daybook);
+// const { addOne } = daybook;
+
+const goToDaybook = async () => await router.push({ name: 'no-entry' });
 </script>
 <template>
   <h1>Hola desde Home</h1>
-  <button @click="goToDaybook">Go to dayBook</button>
+  <!-- <h1>{{ name }}</h1>
+  <p>{{ counter }}</p>
+  <button @click="addOne">add</button>
+  <button @click="goToDaybook">Go to dayBook</button> -->
 </template>
