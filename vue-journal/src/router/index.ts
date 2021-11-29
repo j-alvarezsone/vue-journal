@@ -1,12 +1,11 @@
-import { createWebHashHistory, createRouter } from 'vue-router';
-import Home from '../views/Home.vue';
+import { createWebHashHistory, createRouter, RouteRecordRaw } from 'vue-router';
 import dayBookRouter from '../modules/daybook/router';
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: Home,
+    component: () => import('../views/Home.vue'),
   },
   {
     path: '/daybook',

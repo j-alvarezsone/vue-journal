@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useRouter } from 'vue-router';
 // import { storeToRefs } from 'pinia';
 // import { useDaybook } from '../store/journal';
@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 // const { name, counter } = storeToRefs(daybook);
 // const { addOne } = daybook;
 
-const goToDaybook = async () => await router.push({ name: 'no-entry' });
+// const goToDaybook = async () => await router.push({ name: 'no-entry' });
 </script>
 <template>
   <h1>Hola desde Home</h1>

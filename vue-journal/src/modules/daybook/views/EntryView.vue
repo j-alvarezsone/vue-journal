@@ -1,17 +1,63 @@
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { ref, toRefs, onMounted, computed, watch } from 'vue';
+import { useJournal } from '../../../store/journal';
+import { useRouter } from 'vue-router';
 import Fab from '../components/Fab.vue';
+import getDateMonthYear from '../helpers/getDayMonthYear';
+import { Entries } from '../../../types/index';
 
-const entry = ref(false);
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
+});
+
+const { id } = toRefs(props);
+const { getEntriesById } = useJournal();
+const router = useRouter();
+
+const entry = ref<Entries | null>(null);
+
+const day = computed(() => {
+  const { day } = getDateMonthYear(entry.value?.date as string);
+  return day;
+});
+const month = computed(() => {
+  const { month } = getDateMonthYear(entry.value?.date as string);
+  return month;
+});
+const yearDay = computed(() => {
+  const { year } = getDateMonthYear(entry.value?.date as string);
+  return year;
+});
+
+const loadEntry = () => {
+  const getEntry = getEntriesById(id.value);
+  if (!getEntry) return router.push({ name: 'no-entry' });
+
+  entry.value = getEntry;
+};
+
+onMounted(() => {
+  loadEntry();
+});
+
+watch(
+  () => id.value,
+  () => {
+    loadEntry();
+  },
+);
 </script>
 
 <template>
-  <template v-if="!entry">
+  <template v-if="entry">
     <div class="entry-title d-flex justify-content-between p-2">
       <div>
-        <!-- <span class="text-success fs-3 fw-bold">{{ day }}</span>
+        <span class="text-success fs-3 fw-bold">{{ day }}</span>
         <span class="mx-1 fs-3">{{ month }}</span>
-        <span class="mx-2 fs-4 fw-light">{{ yearDay }}</span> -->
+        <span class="mx-2 fs-4 fw-light">{{ yearDay }}</span>
       </div>
 
       <div>

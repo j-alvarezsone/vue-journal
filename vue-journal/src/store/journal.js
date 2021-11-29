@@ -33,6 +33,14 @@ export const useJournal = defineStore('journal', {
 
         return entries.filter((entry) => entry.text.toLowerCase().includes(term.toLowerCase()));
       },
+    getEntriesById:
+      ({ entries }) =>
+      (id = '') => {
+        const entry = entries.find((entry) => entry.id === id);
+        if (!entry) return;
+
+        return { ...entry };
+      },
   },
 
   actions: {},
