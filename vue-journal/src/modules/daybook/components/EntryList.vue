@@ -1,23 +1,32 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import Entry from './Entry.vue';
-import { useJournal } from '../../../store/journal';
-import { storeToRefs } from 'pinia';
+import { ref } from "vue";
+import Entry from "./Entry.vue";
+import { useJournal } from "@/store/journal";
+import { storeToRefs } from "pinia";
 
 const journal = useJournal();
 const { getEntriesByTerm } = storeToRefs(journal);
 
-const term = ref<string>('');
+const term = ref<string>("");
 </script>
-
 <template>
   <div class="entry-list-container">
     <div class="px-2 pt-2">
-      <input type="text" class="form-control" placeholder="Buscar entrada" v-model="term" />
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar entrada"
+        v-model="term"
+      />
     </div>
-
     <div class="entry-scrollarea">
-      <Entry v-for="entry in getEntriesByTerm(term)" :key="entry.id" :entry="entry" />
+      {{ getEntriesByTerm(term)[1] }}
+
+      <Entry
+        v-for="entry in getEntriesByTerm(term)"
+        :key="entry.id"
+        :entry="entry"
+      />
     </div>
   </div>
 </template>

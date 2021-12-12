@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, toRefs, onMounted, computed, watch } from 'vue';
-import { useJournal } from '../../../store/journal';
-import { useRouter } from 'vue-router';
-import Fab from '../components/Fab.vue';
-import getDateMonthYear from '../helpers/getDayMonthYear';
-import { Entries } from '../../../types/index';
+import { ref, toRefs, onMounted, computed, watch } from "vue";
+import { useJournal } from "@/store/journal";
+import { useRouter } from "vue-router";
+import Fab from "../components/Fab.vue";
+import getDateMonthYear from "../helpers/getDayMonthYear";
+import { Entry } from "@/types";
+import { storeToRefs } from "pinia";
 
 const props = defineProps({
   id: {
@@ -14,10 +15,11 @@ const props = defineProps({
 });
 
 const { id } = toRefs(props);
-const { getEntriesById } = useJournal();
+const { getEntriesById } = storeToRefs(useJournal());
+const { upDateEntry } = useJournal();
 const router = useRouter();
 
-const entry = ref<Entries | null>(null);
+const entry = ref<Entry | null>(null);
 
 const day = computed(() => {
   const { day } = getDateMonthYear(entry.value?.date as string);
@@ -33,10 +35,14 @@ const yearDay = computed(() => {
 });
 
 const loadEntry = () => {
-  const getEntry = getEntriesById(id.value);
-  if (!getEntry) return router.push({ name: 'no-entry' });
+  const getEntry = getEntriesById.value(id.value);
+  if (!getEntry) return router.push({ name: "no-entry" });
 
   entry.value = getEntry;
+};
+
+const saveEntry = async () => {
+  await upDateEntry(entry.value as Entry);
 };
 
 onMounted(() => {
@@ -47,7 +53,7 @@ watch(
   () => id.value,
   () => {
     loadEntry();
-  },
+  }
 );
 </script>
 
@@ -75,7 +81,8 @@ watch(
 
     <hr />
     <div class="d-flex flex-column px-3 h-75">
-      <textarea v-model="entry.text" placeholder="¿What happened today?"></textarea>
+      <textarea v-model="entry.text" placeholder="¿What happened today?">
+      </textarea>
     </div>
 
     <img
@@ -85,7 +92,7 @@ watch(
     />
   </template>
 
-  <Fab icon="fa-save" />
+  <Fab icon="fa-save" @on-save="saveEntry" />
 </template>
 
 <style lang="scss" scoped>
@@ -104,6 +111,6 @@ img {
   position: fixed;
   bottom: 150px;
   right: 20px;
-  box-shadow: 0px 5px 10px rgba($color: #000000, $alpha: 0.2);
+  box-shadow: 0 5px 10px rgba($color: #000000, $alpha: 0.2);
 }
 </style>

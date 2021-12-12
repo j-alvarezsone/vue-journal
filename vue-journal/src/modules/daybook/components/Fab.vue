@@ -2,13 +2,15 @@
 const props = defineProps({
   icon: {
     type: String,
-    default: 'fa-plus',
+    default: "fa-plus",
   },
 });
+
+const emit = defineEmits(["onSave"]);
 </script>
 
 <template>
-  <button class="btn btn-primary">
+  <button class="btn btn-primary" @click.prevent="emit('onSave')">
     <i class="fa fa-2x" :class="props.icon"></i>
   </button>
 </template>

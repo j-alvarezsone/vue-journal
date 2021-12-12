@@ -4,7 +4,7 @@ import Fab from '../components/Fab.vue';
 
 <template>
   <div class="d-flex justify-content-center">
-    <h1 class="align-self-center">No hay nada seleccionado</h1>
+    <h1 class="align-self-center">Nothing is selected</h1>
   </div>
 
   <Fab />

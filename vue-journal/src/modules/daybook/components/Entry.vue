@@ -1,53 +1,67 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, PropType, toRefs } from "vue";
+import { Entry } from "@/types";
 
 const props = defineProps({
   entry: {
-    type: Object,
+    type: Object as PropType<Entry>,
     required: true,
   },
 });
 
-const { date: entryDate, text, id } = props.entry;
+const { entry } = toRefs(props);
 
 const shortText = computed(() => {
-  return text.length > 130 ? `${text.substring(0, 130)}...` : text;
+  return entry.value.text.length > 130
+    ? `${entry.value.text.substring(0, 130)}...`
+    : entry.value.text;
 });
 
 const months = ref<string[]>([
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'Jun',
-  'Julie',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "Jun",
+  "Julie",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ]);
-const days = ref<string[]>(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
+const days = ref<string[]>([
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+]);
 
 const day = computed(() => {
-  const date = new Date(entryDate);
+  const date = new Date(entry.value.date);
   return date.getDate();
 });
 
 const month = computed(() => {
-  const date = new Date(entryDate);
+  const date = new Date(entry.value.date);
   return months.value[date.getMonth()];
 });
 
 const yearDay = computed(() => {
-  const date = new Date(entryDate);
+  const date = new Date(entry.value.date);
   return `${date.getFullYear()}, ${days.value[date.getDay()]}`;
 });
 </script>
 
 <template>
-  <div class="entry-container mb-3 pointer p-2" @click="$router.push({ name: 'entry', params: { id: id } })">
+  <div
+    class="entry-container mb-3 pointer p-2"
+    @click="$router.push({ name: 'entry', params: { id: entry.id } })"
+  >
     <!-- Title -->
     <div class="entry-title d-flex align-items-center">
       <span class="text-success fs-5 fw-bold">{{ day }}</span>
