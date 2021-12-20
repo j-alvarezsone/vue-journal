@@ -14,26 +14,26 @@ export const useJournal = defineStore("journal", {
       (term = ""): Entry[] => {
         if (term.length === 0) return entries;
 
-        return entries.filter((entry: Entry) =>
+        return entries.filter((entry) =>
           entry.text.toLowerCase().includes(term.toLowerCase())
-        ) as Entry[];
+        );
       },
     getEntriesById:
       ({ entries }) =>
       (id = "") => {
-        const entry: Entry = entries.find((entry: Entry) => entry.id === id)!;
+        const entry = entries.find((entry) => entry.id === id);
         if (!entry) return;
 
         return { ...entry };
       },
-    setEntries: (state) => (entries: Entry[]) => {
-      state.entries = [...state.entries, ...entries] as [];
+    setEntries: (state) => (entries) => {
+      state.entries = [...state.entries, ...entries] as Entry[];
       state.isLoading = false;
     },
     updateEntry:
       ({ entries }) =>
       (entry: Entry) => {
-        const idx = entries.map((e: Entry) => e.id).indexOf(entry.id);
+        const idx = entries.map((e) => e.id).indexOf(entry.id);
         entries[idx] = entry;
       },
   },
@@ -58,8 +58,8 @@ export const useJournal = defineStore("journal", {
       try {
         const { id, date, picture, text } = entry;
         const dataToSave = { date, picture, text };
-        const resp = await journalApi.put(`/entries/${id}.json`, dataToSave);
-        console.log(resp);
+
+        await journalApi.put(`/entries/${id}.json`, dataToSave);
         this.updateEntry({ ...entry });
       } catch (err) {
         console.log(err);

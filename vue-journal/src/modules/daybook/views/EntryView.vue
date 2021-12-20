@@ -35,14 +35,28 @@ const yearDay = computed(() => {
 });
 
 const loadEntry = () => {
-  const getEntry = getEntriesById.value(id.value);
-  if (!getEntry) return router.push({ name: "no-entry" });
+  let getEntry;
+  if (id.value === "new") {
+    getEntry = {
+      text: "",
+      date: new Date().getTime(),
+    };
+  } else {
+    getEntry = getEntriesById.value(id.value);
+    if (!getEntry) return router.push({ name: "no-entry" });
+  }
 
   entry.value = getEntry;
 };
 
 const saveEntry = async () => {
-  await upDateEntry(entry.value as Entry);
+  // Actualizar
+  if (entry.value?.id) {
+    await upDateEntry(entry.value as Entry);
+  } else {
+    // Crear una nueva entrada
+    console.log("Creando nueva entrada");
+  }
 };
 
 onMounted(() => {

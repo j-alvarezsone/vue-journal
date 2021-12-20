@@ -19,9 +19,18 @@ const term = ref<string>("");
         v-model="term"
       />
     </div>
-    <div class="entry-scrollarea">
-      {{ getEntriesByTerm(term)[1] }}
 
+    <div class="mt-2 d-flex flex-column">
+      <button
+        class="btn btn-primary mx-2"
+        @click.prevent="$router.push({ name: 'entry', params: { id: 'new' } })"
+      >
+        <i class="fa fa-plus-circle"></i>
+        New Entry
+      </button>
+    </div>
+
+    <div class="entry-scrollarea">
       <Entry
         v-for="entry in getEntriesByTerm(term)"
         :key="entry.id"
