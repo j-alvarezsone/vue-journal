@@ -16,7 +16,7 @@ const props = defineProps({
 
 const { id } = toRefs(props);
 const { getEntriesById } = storeToRefs(useJournal());
-const { upDateEntry } = useJournal();
+const { upDateEntry, createEntry, deleteEntry } = useJournal();
 const router = useRouter();
 
 const entry = ref<Entry | null>(null);
@@ -55,8 +55,14 @@ const saveEntry = async () => {
     await upDateEntry(entry.value as Entry);
   } else {
     // Crear una nueva entrada
-    console.log("Creando nueva entrada");
+    const id = await createEntry(entry.value as Entry);
+    await router.push({ name: "entry", params: { id } });
   }
+};
+
+const onDelateEntry = async () => {
+  await deleteEntry(entry.value?.id as string);
+  await router.push({ name: "no-entry" });
 };
 
 onMounted(() => {
@@ -81,7 +87,11 @@ watch(
       </div>
 
       <div>
-        <button class="btn btn-danger mx-2">
+        <button
+          v-if="entry.id"
+          class="btn btn-danger mx-2"
+          @click.prevent="onDelateEntry"
+        >
           Delete
           <i class="fa fa-trash-alt"></i>
         </button>

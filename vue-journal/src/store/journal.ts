@@ -26,7 +26,7 @@ export const useJournal = defineStore("journal", {
 
         return { ...entry };
       },
-    setEntries: (state) => (entries) => {
+    setEntries: (state) => (entries: Entry[]) => {
       state.entries = [...state.entries, ...entries] as Entry[];
       state.isLoading = false;
     },
@@ -36,12 +36,23 @@ export const useJournal = defineStore("journal", {
         const idx = entries.map((e) => e.id).indexOf(entry.id);
         entries[idx] = entry;
       },
+    addEntry: (state) => (entry: Entry) => {
+      state.entries = [entry, ...state.entries] as Entry[];
+    },
+    deleteEntry1: (state) => (id: string) => {
+      state.entries = state.entries.filter((entry) => entry.id !== id);
+    },
   },
 
   actions: {
     async loadEntries() {
       try {
         const { data } = await journalApi.get("/entries.json");
+
+        if (!data) {
+          this.setEntries([]);
+          return;
+        }
         const entries: Entry[] = [];
         for (let id of Object.keys(data)) {
           entries.push({
@@ -61,6 +72,36 @@ export const useJournal = defineStore("journal", {
 
         await journalApi.put(`/entries/${id}.json`, dataToSave);
         this.updateEntry({ ...entry });
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async createEntry(entry: Entry) {
+      try {
+        const { date, picture, text, id } = entry;
+        const dataToSave = {
+          date,
+          picture,
+          text,
+          id,
+        };
+
+        const { data } = await journalApi.post(`/entries.json`, dataToSave);
+        dataToSave.id = data.name;
+
+        this.addEntry(dataToSave);
+
+        return data.name;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async deleteEntry(id: string) {
+      try {
+        await journalApi.delete(`/entries/${id}.json`);
+
+        this.deleteEntry1(id);
+        return id;
       } catch (err) {
         console.log(err);
       }
