@@ -94,6 +94,28 @@ const onDelateEntry = async () => {
   }
 };
 
+const localImage = ref(null as any);
+const file = ref(null as any);
+
+const onSelectedImage = (e) => {
+  const files = e.target.files[0];
+  if (!files) {
+    localImage.value = null;
+    file.value = null;
+    return;
+  }
+  file.value = files;
+  const reader = new FileReader();
+  reader.onload = () => (localImage.value = reader.result);
+  reader.readAsDataURL(files);
+};
+
+const imageSelector = ref<HTMLImageElement>(null as any);
+
+const onSelectImage = () => {
+  imageSelector.value.click();
+};
+
 onMounted(() => {
   loadEntry();
 });
@@ -116,6 +138,13 @@ watch(
       </div>
 
       <div>
+        <input
+          v-show="false"
+          type="file"
+          @change="onSelectedImage"
+          ref="imageSelector"
+          accept="image/png, image/jpeg"
+        />
         <button
           v-if="entry.id"
           class="btn btn-danger mx-2"
@@ -125,7 +154,7 @@ watch(
           <i class="fa fa-trash-alt"></i>
         </button>
 
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" @click.prevent="onSelectImage">
           Upload photo
           <i class="fa fa-upload"></i>
         </button>
@@ -138,8 +167,14 @@ watch(
       </textarea>
     </div>
 
+    <!--    <img-->
+    <!--      src="https://www.robertlandscapes.com/wp-content/uploads/2014/11/landscape-322100_1280.jpg"-->
+    <!--      alt="entry-picture"-->
+    <!--      class="img-thumbnail"-->
+    <!--    />-->
     <img
-      src="https://www.robertlandscapes.com/wp-content/uploads/2014/11/landscape-322100_1280.jpg"
+      v-if="localImage"
+      :src="localImage"
       alt="entry-picture"
       class="img-thumbnail"
     />
