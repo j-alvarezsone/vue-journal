@@ -6,6 +6,7 @@ import Fab from "../components/Fab.vue";
 import getDateMonthYear from "../helpers/getDayMonthYear";
 import { Entry } from "@/types";
 import { storeToRefs } from "pinia";
+import Swal from "sweetalert2";
 
 const props = defineProps({
   id: {
@@ -50,6 +51,15 @@ const loadEntry = () => {
 };
 
 const saveEntry = async () => {
+  await Swal.fire({
+    title: "Please Wait!",
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+      Swal.close();
+    },
+  });
+
   // Actualizar
   if (entry.value?.id) {
     await upDateEntry(entry.value as Entry);
@@ -58,11 +68,30 @@ const saveEntry = async () => {
     const id = await createEntry(entry.value as Entry);
     await router.push({ name: "entry", params: { id } });
   }
+  await Swal.fire("Saved", "Your entry has been saved", "success");
 };
 
 const onDelateEntry = async () => {
-  await deleteEntry(entry.value?.id as string);
-  await router.push({ name: "no-entry" });
+  const { isConfirmed } = await Swal.fire({
+    title: "Are you sure?",
+    text: "Once deleted, it cannot be recovered",
+    showDenyButton: true,
+    confirmButtonText: "Yes, I'm sure",
+  });
+  if (isConfirmed) {
+    await Swal.fire({
+      title: "Wait please",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        Swal.close();
+      },
+    });
+
+    await deleteEntry(entry.value?.id as string);
+    await router.push({ name: "no-entry" });
+    await Swal.fire("Deleted", "", "success");
+  }
 };
 
 onMounted(() => {
