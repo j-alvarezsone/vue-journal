@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs, onMounted, computed, watch } from "vue";
+import { computed, onMounted, ref, toRefs, watch } from "vue";
 import { useJournal } from "@/store/journal";
 import { useRouter } from "vue-router";
 import Fab from "../components/Fab.vue";
@@ -7,6 +7,7 @@ import getDateMonthYear from "../helpers/getDayMonthYear";
 import { Entry } from "@/types";
 import { storeToRefs } from "pinia";
 import Swal from "sweetalert2";
+import { uploadImage } from "../helpers/uploadImage";
 
 const props = defineProps({
   id: {
@@ -60,6 +61,8 @@ const saveEntry = async () => {
     },
   });
 
+  entry.value!.picture = await uploadImage(file.value);
+
   // Actualizar
   if (entry.value?.id) {
     await upDateEntry(entry.value as Entry);
@@ -68,6 +71,8 @@ const saveEntry = async () => {
     const id = await createEntry(entry.value as Entry);
     await router.push({ name: "entry", params: { id } });
   }
+
+  localImage.value = null;
   await Swal.fire("Saved", "Your entry has been saved", "success");
 };
 
@@ -167,11 +172,12 @@ watch(
       </textarea>
     </div>
 
-    <!--    <img-->
-    <!--      src="https://www.robertlandscapes.com/wp-content/uploads/2014/11/landscape-322100_1280.jpg"-->
-    <!--      alt="entry-picture"-->
-    <!--      class="img-thumbnail"-->
-    <!--    />-->
+    <img
+      v-if="entry.picture && !localImage"
+      :src="entry.picture"
+      alt="entry-picture"
+      class="img-thumbnail"
+    />
     <img
       v-if="localImage"
       :src="localImage"
