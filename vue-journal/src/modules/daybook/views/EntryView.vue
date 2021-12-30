@@ -57,7 +57,9 @@ const saveEntry = async () => {
     allowOutsideClick: false,
     didOpen: () => {
       Swal.showLoading();
-      Swal.close();
+      setTimeout(() => {
+        Swal.close();
+      }, 1000);
     },
   });
 
@@ -89,7 +91,9 @@ const onDelateEntry = async () => {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-        Swal.close();
+        setTimeout(() => {
+          Swal.close();
+        }, 1000);
       },
     });
 
