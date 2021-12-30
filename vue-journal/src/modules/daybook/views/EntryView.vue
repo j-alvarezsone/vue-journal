@@ -3,11 +3,11 @@ import { computed, onMounted, ref, toRefs, watch } from "vue";
 import { useJournal } from "@/store/journal";
 import { useRouter } from "vue-router";
 import Fab from "../components/Fab.vue";
-import getDateMonthYear from "../helpers/getDayMonthYear";
+import getDateMonthYear from "../composables/getDayMonthYear";
 import { Entry } from "@/types";
 import { storeToRefs } from "pinia";
 import Swal from "sweetalert2";
-import { uploadImage } from "../helpers/uploadImage";
+import { uploadImage } from "../composables/uploadImage";
 
 const props = defineProps({
   id: {
