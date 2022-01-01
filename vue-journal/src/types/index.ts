@@ -4,3 +4,9 @@ export type Entry = {
   text: string;
   picture?: string;
 };
+
+export type User = {
+  name?: string;
+  email: string;
+  password: string | undefined;
+};

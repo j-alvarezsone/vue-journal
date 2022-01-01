@@ -59,7 +59,8 @@ const yearDay = computed(() => {
 
 <template>
   <div
-    class="entry-container mb-3 pointer p-2"
+    class="entry-container mb-3 p-2"
+    style="cursor: pointer"
     @click="$router.push({ name: 'entry', params: { id: entry.id } })"
   >
     <!-- Title -->

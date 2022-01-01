@@ -106,5 +106,8 @@ export const useJournal = defineStore("journal", {
         console.log(err);
       }
     },
+    clearEntries() {
+      this.entries = [];
+    },
   },
 });
